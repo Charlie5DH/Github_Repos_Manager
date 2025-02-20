@@ -119,6 +119,7 @@ const GitHubSearch = () => {
         throw new Error(`GitHub API error: ${response.status}`);
       }
       const data = await response.json();
+      console.log(data);
       if (page === 1) {
         setRepositories(data);
       } else {
@@ -300,7 +301,7 @@ const GitHubSearch = () => {
             </div>
           ) : repositories.length > 0 ? (
             <>
-              <div className="z-10 w-full max-w-[1440px] grid grid-flow-row grid-cols-3 lg:grid-cols-4 gap-4 px-6 mt-5">
+              <div className="z-10 w-full max-w-[1440px] grid grid-flow-row md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 px-6 mt-5">
                 <RepoGrid repositories={sortRepositories(repositories)} />
               </div>
               {hasMore && (

@@ -5,12 +5,13 @@ import {
   CardHeader,
   CardTitle,
 } from "../../components/ui/card";
-import { GitForkIcon, Star } from "lucide-react";
+import { Eye, GitForkIcon, Star } from "lucide-react";
 import { GitHubRepo } from "../../types/types";
 
 const RepoGrid = ({ repositories }: { repositories: GitHubRepo[] }) => {
   return repositories.map((repo) => (
     <Card
+      onClick={() => window.open(repo.html_url, "_blank")}
       key={repo.id}
       rel="noopener noreferrer"
       className="col-span-1 hover:shadow-md transition-shadow hover:border-muted-foreground/40 cursor-pointer"
@@ -26,6 +27,9 @@ const RepoGrid = ({ repositories }: { repositories: GitHubRepo[] }) => {
           </span>
           <span className="flex items-center text-muted-foreground gap-1">
             <GitForkIcon size={16} /> {repo.forks_count} forks
+          </span>
+          <span className="flex items-center text-muted-foreground gap-1">
+            <Eye size={16} /> {repo.watchers} watchers
           </span>
         </div>
       </CardContent>

@@ -18,6 +18,7 @@ export interface GitHubRepo {
   stargazers_count: number;
   forks_count: number;
   html_url: string;
+  watchers: number;
 }
 
 export type SortOption = "stars" | "forks" | "name";
