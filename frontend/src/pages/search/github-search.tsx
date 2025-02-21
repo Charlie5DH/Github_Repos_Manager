@@ -3,7 +3,7 @@ import { Input } from "../../components/ui/input";
 import { Download, GitFork, LetterText, Loader2, Star } from "lucide-react";
 import RepoGrid from "./repo-grid";
 import { exportToCSV } from "../../lib/utils";
-import { GitHubRepo, GitHubUser, SortOption } from "../../types/types";
+import { GitHubRepoFromApi, GitHubUser, SortOption } from "../../types/types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useToast } from "../../hooks/use-toast";
 import { ToggleGroup, ToggleGroupItem } from "../../components/ui/toggle-group";
@@ -21,7 +21,7 @@ const debounce = <T extends unknown[]>(
 
 const GitHubSearch = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [repositories, setRepositories] = useState<GitHubRepo[]>([]);
+  const [repositories, setRepositories] = useState<GitHubRepoFromApi[]>([]);
   const [suggestions, setSuggestions] = useState<GitHubUser[]>([]);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
   const [loadingSuggestions, setLoadingSuggestions] = useState<boolean>(false);
@@ -119,13 +119,12 @@ const GitHubSearch = () => {
         throw new Error(`GitHub API error: ${response.status}`);
       }
       const data = await response.json();
-      console.log(data);
       if (page === 1) {
         setRepositories(data);
       } else {
         setRepositories((prev) => [...prev, ...data]);
       }
-      setHasMore(data.length === 100); // If we got 100 repos, there might be more
+      setHasMore(data.length === 100);
       setPage(page);
     } catch (error: unknown) {
       console.error("Error fetching repositories:", error);
@@ -149,7 +148,9 @@ const GitHubSearch = () => {
     }
   };
 
-  const sortRepositories = (repos: GitHubRepo[]): GitHubRepo[] => {
+  const sortRepositories = (
+    repos: GitHubRepoFromApi[]
+  ): GitHubRepoFromApi[] => {
     switch (sortBy) {
       case "stars":
         return [...repos].sort(
@@ -183,10 +184,8 @@ const GitHubSearch = () => {
         setShowSuggestions(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleKeyDown);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyDown);

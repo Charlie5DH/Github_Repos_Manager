@@ -6,9 +6,9 @@ import {
   CardTitle,
 } from "../../components/ui/card";
 import { Eye, GitForkIcon, Star } from "lucide-react";
-import { GitHubRepo } from "../../types/types";
+import { GitHubRepoFromApi } from "../../types/types";
 
-const RepoGrid = ({ repositories }: { repositories: GitHubRepo[] }) => {
+const RepoGrid = ({ repositories }: { repositories: GitHubRepoFromApi[] }) => {
   return repositories.map((repo) => (
     <Card
       onClick={() => window.open(repo.html_url, "_blank")}

@@ -18,6 +18,20 @@ export interface GitHubRepo {
   stargazers_count: number;
   forks_count: number;
   html_url: string;
+  login: string;
+  avatar_url: string;
+  watchers: string;
+}
+
+export interface GitHubRepoFromApi {
+  id: number;
+  name: string;
+  description: string;
+  stargazers_count: number;
+  forks_count: number;
+  html_url: string;
+  owner: GitHubUser;
+  avatar_url: string;
   watchers: number;
 }
 

@@ -3,6 +3,7 @@ import Navbar from "./components/layout/navbar";
 import GitHubSearch from "./pages/search/github-search";
 import MyRepos from "./pages/repos/my-repos";
 import DashedBackgroundLines from "./components/layout/dashed-lines";
+import { Toaster } from "./components/ui/toaster";
 
 function App() {
   const notifications = [
@@ -19,6 +20,7 @@ function App() {
   ];
   return (
     <Router>
+      <Toaster />
       <div className="min-h-screen bg-background text-foreground">
         <DashedBackgroundLines />
         <Navbar
