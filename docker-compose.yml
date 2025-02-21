@@ -3,7 +3,7 @@ services:
     image: rabbitmq:3-management
     container_name: rabbitmq
     env_file:
-      - .env
+      - .env.example
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
@@ -17,7 +17,7 @@ services:
     image: mariadb:10.5
     container_name: mariadb
     env_file:
-      - .env
+      - .env.example
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
@@ -35,8 +35,9 @@ services:
     build:
       context: ./backend
     container_name: backend
+    restart: always
     env_file:
-      - .env
+      - .env.example
     environment:
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
@@ -61,8 +62,9 @@ services:
     build:
       context: ./backend
     container_name: worker
+    restart: always
     env_file:
-      - .env
+      - .env.example
     environment:
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
@@ -77,6 +79,19 @@ services:
     depends_on:
       - mariadb
       - rabbitmq
+      - backend
+    networks:
+      - github_repo_manager
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    env_file:
+      - .env.example
+    ports:
+      - "3000:3000"
+    depends_on:
       - backend
     networks:
       - github_repo_manager
