@@ -17,8 +17,6 @@ const MyRepos: React.FC = () => {
     setRepositories((prevRepos) => [...data, ...prevRepos]);
   };
 
-  console.log(repositories);
-
   return (
     <div className="flex h-screen w-full">
       <div className="relative flex flex-col h-screen w-full dark:bg-grid-small-white/[0.1] bg-grid-small-black/[0.1] pb-20 px-6 items-center">
