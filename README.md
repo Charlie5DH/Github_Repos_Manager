@@ -37,6 +37,24 @@ Faça um passo a passo do processo de execução do projeto, lembrando da obriga
 
 - Rodar script em Scripts/start.hs com o comando build `sh ./Scripts/start.sh build` ou alternativamente rodar `docker compose up -d --build`
 - Accessar localhost:3000
+- Backend: http://localhost:8000/docs (documentação interativa do FastAPI).
+
+### Fluxo de Uso
+- Tela de Pesquisa (frontend):
+-   Pesquise por um usuário do GitHub e visualize seus repositórios.
+-   Clique em “Exportar CSV” para baixar CSV.
+-   Na tela MyRepos, importar arquivo baixado
+
+- Backend:
+-  Recebe o CSV e a envia à fila RabbitMQ com um delay de 5 segundos para simular processamento.
+
+- Worker:
+-  Consome a fila, processa e grava dados no MariaDB.
+-  Notifica o Backend (via /api/notify).
+
+O Frontend exibe um toast (via shadcn) com a mensagem e o horário do processamento.
+
+
 
 ![image](https://github.com/user-attachments/assets/7d390322-0cce-44dc-b7b7-d6088b3b89f2)
 ![image](https://github.com/user-attachments/assets/b0678f69-1634-41f7-b815-3d2d9c487b49)
