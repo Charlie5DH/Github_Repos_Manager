@@ -32,3 +32,18 @@ Faça um passo a passo do processo de execução do projeto, lembrando da obriga
 - MariaDB
 - React
 - RabbitMQ
+
+## Solução
+
+- Rodar script em Scripts/start.hs com o comando build `sh ./Scripts/start.sh build` ou alternativamente rodar `docker compose up -d --build`
+- Accessar localhost:3000
+
+![image](https://github.com/user-attachments/assets/7d390322-0cce-44dc-b7b7-d6088b3b89f2)
+![image](https://github.com/user-attachments/assets/b0678f69-1634-41f7-b815-3d2d9c487b49)
+![image](https://github.com/user-attachments/assets/702c032c-fedc-4669-8b32-8c5c6e33415a)
+![image](https://github.com/user-attachments/assets/01ab35d8-c61c-4dd9-b6a0-1cc4de56e9dd)
+![image](https://github.com/user-attachments/assets/12c4dd09-67a4-4b25-9bdb-c0891d339507)
+
+
+
+
