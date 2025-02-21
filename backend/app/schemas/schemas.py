@@ -5,7 +5,7 @@ from typing import Optional
 class GitHubRepoSchema(BaseModel):
     id: int
     name: str
-    description: Optional[str] = ''
+    description: Optional[str] = None
     stargazers_count: int
     forks_count: int
     html_url: str

@@ -19,35 +19,25 @@ const CSVImport: React.FC<CSVImportProps> = ({ onImport, repos }) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (event.target.files) {
-      const file = event.target.files[0];
-      if (!file) {
-        return;
-      }
-      const text = await file.text();
-      const rows = text.split("\n");
-      const headers = rows[0].split(",").map((header) => header.trim());
-
-      if (!validateCSVHeaders(headers)) {
-        toast({
-          title: "Error in CSV file",
-          description: "CSV file does not contain all required columns.",
-          variant: "destructive",
-        });
-        throw new Error("CSV file does not contain all required columns");
-      } else {
-        toast({
-          title: "CSV file validated",
-          description: "CSV file validated successfully.",
-          variant: "success",
-        });
-      }
-      setFile(file);
-    }
-  };
+  function parseAndValidateCSV(file: File) {
+    Papa.parse(file, {
+      header: true,
+      dynamicTyping: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        const fields = results.meta.fields || [];
+        if (!validateCSVHeaders(fields)) {
+          toast({
+            title: "Error in CSV file",
+            description: "CSV file does not contain all required columns.",
+            variant: "destructive",
+          });
+          throw new Error("CSV file does not contain all required columns");
+        }
+        setFile(file);
+      },
+    });
+  }
 
   const validateCSVHeaders = (headers: string[]): boolean => {
     const requiredColumns: (keyof GitHubRepo)[] = [
@@ -62,6 +52,18 @@ const CSVImport: React.FC<CSVImportProps> = ({ onImport, repos }) => {
       "watchers",
     ];
     return requiredColumns.every((column) => headers.includes(column));
+  };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.files) {
+      const file = event.target.files[0];
+      if (!file) {
+        return;
+      }
+      parseAndValidateCSV(file);
+    }
   };
 
   const handleImport = async () => {
@@ -79,13 +81,8 @@ const CSVImport: React.FC<CSVImportProps> = ({ onImport, repos }) => {
     Papa.parse(file, {
       complete: async (results) => {
         try {
-          if (!validateCSVHeaders(results.meta.fields || [])) {
-            throw new Error("CSV file does not contain all required columns");
-          }
+          parseAndValidateCSV(file);
           const data: GitHubRepo[] = results.data as GitHubRepo[];
-
-          // 2. Immediately append repos to the table
-          // if they are not already present
           const newRepos = data.filter(
             (repo) => !repos.some((r) => r.id === repo.id)
           );

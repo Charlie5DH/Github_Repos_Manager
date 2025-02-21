@@ -42,7 +42,7 @@ const MyRepos: React.FC = () => {
       toast({
         title: "Error deleting repositories",
         description: "An error occurred while deleting repositories",
-        variant: "destructive",
+        variant: "warning",
       });
       console.error("Error deleting repositories:", error);
     }

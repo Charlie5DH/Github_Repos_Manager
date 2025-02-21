@@ -1,24 +1,40 @@
-import { Bell, GitMergeIcon } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+import { GitMergeIcon } from "lucide-react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Button } from "../ui/button";
+import { useToast } from "../../hooks/use-toast";
 
-type NavbarProps = {
-  unreadCount: number;
-  notifications: Array<{ id: string; message: string; timestamp: Date }>;
-  handleNotificationClick: () => void;
-};
+const wsUrl =
+  import.meta.env.VITE_API_URL || "ws://localhost:8000/api/ws/notify";
 
-const Navbar: React.FC<NavbarProps> = ({
-  unreadCount,
-  notifications,
-  handleNotificationClick,
-}: NavbarProps) => {
+const Navbar = () => {
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const socket = new WebSocket(wsUrl);
+
+    socket.onopen = () => {
+      console.log("WebSocket connection opened.");
+    };
+    socket.onmessage = (event) => {
+      try {
+        const payload = JSON.parse(event.data);
+        const messageText = payload.message ?? "Notification received";
+        toast({
+          title: `${messageText}`,
+          description: `Timestamp: ${new Date().toISOString()}`,
+        });
+      } catch (err) {
+        console.error("Failed to parse incoming WS message:", err);
+      }
+    };
+    socket.onclose = () => {
+      console.log("WebSocket connection closed.");
+    };
+    return () => {
+      socket.close();
+    };
+  }, [toast]);
+
   return (
     <div className="flex flex-row gap-3 items-center justify-center px-2 w-full dark:bg-black h-14 border-b border-dashed">
       <div className="flex items-center gap-2 border-x-[1px] border-dashed w-full max-w-[1440px] h-full">
@@ -43,46 +59,7 @@ const Navbar: React.FC<NavbarProps> = ({
               </Link>
             </nav>
           </div>
-          <div className="flex items-center space-x-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative">
-                  <Bell className="h-5 w-5" />
-                  {unreadCount > 0 && (
-                    <span
-                      className="absolute top-[-1] right-0 inline-flex items-center justify-center px-2 py-1 text-xs 
-                    font-bold leading-none text-primary-foreground bg-primary rounded-full transform translate-x-1/2 -translate-y-1/2"
-                    >
-                      {unreadCount}
-                    </span>
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="w-80"
-                onClick={handleNotificationClick}
-              >
-                {notifications.length === 0 ? (
-                  <DropdownMenuItem>No notifications</DropdownMenuItem>
-                ) : (
-                  notifications.map((notification) => (
-                    <DropdownMenuItem
-                      key={notification.id}
-                      className="flex flex-col items-start"
-                    >
-                      <span className="font-medium">
-                        {notification.message}
-                      </span>
-                      <span className="text-sm text-muted-foreground">
-                        {notification.timestamp.toLocaleString()}
-                      </span>
-                    </DropdownMenuItem>
-                  ))
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <div className="flex items-center space-x-2"></div>
         </div>
       </div>
     </div>

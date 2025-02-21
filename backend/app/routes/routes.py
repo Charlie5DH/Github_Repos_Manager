@@ -44,7 +44,9 @@ async def notify_all(payload: NotificationPayload):
     """
     Broadcast a message to all connected WebSocket clients.
     """
-    await manager.broadcast(payload.message)
+    data = payload.dict()
+    serialized = json.dumps(data)
+    await manager.broadcast(serialized)
     return {"detail": "Broadcast sent to all clients."}
 
 @router.post("/import-repos")

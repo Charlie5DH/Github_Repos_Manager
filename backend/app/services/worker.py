@@ -3,7 +3,7 @@ import time
 import logging
 import requests
 import pika
-
+from datetime import datetime
 from sqlalchemy.orm import Session
 
 from app.db.database import SessionLocal, engine
@@ -98,7 +98,10 @@ def notify_frontend(count: int):
     BACKEND_NOTIFY_URL is read from environment variables via config.py
     """
     try:
-        payload = {"message": f"Imported {count} repositories!"}
+        payload = {
+            "message": f"Imported {count} repositories!",
+        }
+
         resp = requests.post(f"{BACKEND_NOTIFY_URL}/notify", json=payload, timeout=5)
         if resp.status_code == 200 or resp.status_code == 201:
             logger.info("Successfully notified frontend via WebSocket broadcast.")

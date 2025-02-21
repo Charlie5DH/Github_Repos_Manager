@@ -35,4 +35,10 @@ export interface GitHubRepoFromApi {
   watchers: number;
 }
 
+export interface NotificationData {
+  id: string;
+  message: string;
+  timestamp: string; // or Date, if you parse it
+}
+
 export type SortOption = "stars" | "forks" | "name";

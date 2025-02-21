@@ -41,7 +41,7 @@ export const exportToCSV = (repositories: GitHubRepoFromApi[]) => {
       data: data,
     },
     {
-      quotes: true, // This ensures all fields are quoted, handling commas in descriptions
+      quotes: true,
       quoteChar: '"',
       escapeChar: '"',
     }
