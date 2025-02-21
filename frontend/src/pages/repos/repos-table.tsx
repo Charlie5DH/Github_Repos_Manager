@@ -180,7 +180,7 @@ const RepoTable: React.FC<RepoTableProps> = ({ repositories }) => {
           placeholder="Filter repositories..."
           value={globalFilter ?? ""}
           onChange={(event) => setGlobalFilter(String(event.target.value))}
-          className="max-w-sm"
+          className="w-full"
         />
       </div>
       <div className="rounded-md border bg-white w-full shadow-sm">

@@ -1,8 +1,7 @@
-# apps/backend/app/main.py
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes.routes import router
+from app.routes.routes import router as api_router
+
 from app.db.database import Base, engine
 
 app = FastAPI(title="Github Repo Manager")
@@ -19,4 +18,4 @@ app.add_middleware(
 Base.metadata.create_all(bind=engine)
 
 # Include API routes
-app.include_router(router, prefix="/api", tags=["api"])
+app.include_router(api_router, prefix="/api")

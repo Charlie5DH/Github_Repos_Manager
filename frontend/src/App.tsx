@@ -4,8 +4,12 @@ import GitHubSearch from "./pages/search/github-search";
 import MyRepos from "./pages/repos/my-repos";
 import DashedBackgroundLines from "./components/layout/dashed-lines";
 import { Toaster } from "./components/ui/toaster";
+import { useNotificationSocket } from "./hooks/use-websocket";
 
 function App() {
+  const wsUrl = "ws://localhost:8000/api/ws/notify";
+  const messages = useNotificationSocket(wsUrl);
+  console.log(messages);
   const notifications = [
     {
       id: "1",

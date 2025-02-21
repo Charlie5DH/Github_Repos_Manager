@@ -5,13 +5,16 @@ import { Input } from "../../components/ui/input";
 import { useToast } from "../../hooks/use-toast";
 import { Loader2, Upload } from "lucide-react";
 import { GitHubRepo } from "../../types/types";
+import { importRepos } from "../../api/repos";
 import Papa from "papaparse";
+import { AxiosError } from "axios";
 
 interface CSVImportProps {
   onImport: (data: GitHubRepo[]) => void;
+  repos: GitHubRepo[];
 }
 
-const CSVImport: React.FC<CSVImportProps> = ({ onImport }) => {
+const CSVImport: React.FC<CSVImportProps> = ({ onImport, repos }) => {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -80,35 +83,32 @@ const CSVImport: React.FC<CSVImportProps> = ({ onImport }) => {
             throw new Error("CSV file does not contain all required columns");
           }
           const data: GitHubRepo[] = results.data as GitHubRepo[];
-          // Append repos to the table immediately
-          onImport(data);
-          // Send data to backend
+
+          // 2. Immediately append repos to the table
+          // if they are not already present
+          const newRepos = data.filter(
+            (repo) => !repos.some((r) => r.id === repo.id)
+          );
+          onImport(newRepos);
+
+          // 3. Send data to backend using the imported function
           try {
-            const response = await fetch("/api/import-repos", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(data),
-            });
-
-            if (!response.ok) {
-              throw new Error("Failed to send data to backend");
-            }
-
-            // onImport(data);
+            await importRepos(data);
             toast({
               title: "Success",
               description:
                 "CSV data imported and sent to backend successfully.",
+              variant: "success",
             });
-          } catch (error) {
+          } catch (error: unknown) {
             console.error("Error sending data to backend:", error);
             toast({
-              title: "Warning",
+              title: "Import error",
               description:
+                (error as AxiosError<{ detail: string }>).response?.data
+                  ?.detail ??
                 "Repos imported to table, but failed to send to backend. Please try again later.",
-              variant: "warning",
+              variant: "destructive",
             });
           }
         } catch (error) {
